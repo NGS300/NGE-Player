@@ -15,7 +15,7 @@ class Main extends Sprite{
     //private var data = backstuff.save.SaveData;
     public static var memoryCounter:MemoryCounter;
     public static var fpsCounter:FPSCounter;
-    public var config={
+    public var config = {
         initialState: null,//backstuff.state.Title,
         fullscreen: false,
         splash: false,
@@ -33,12 +33,13 @@ class Main extends Sprite{
 
     public function new(){
 		super();
-        stuff.util.WindowUtil.initWindowEvents();
+        //stuff.util.WindowUtil.initWindowEvents();
         //WindowUtil.setWindowTitle(false);
 		(stage != null ? init() : addEventListener(Event.ADDED_TO_STAGE, init));
 	}
 	private function init(?E:Event){
-		if (hasEventListener(Event.ADDED_TO_STAGE)) removeEventListener(Event.ADDED_TO_STAGE, init);
+		if (hasEventListener(Event.ADDED_TO_STAGE))
+            removeEventListener(Event.ADDED_TO_STAGE, init);
 		setupGame();
 	}
 
@@ -46,13 +47,6 @@ class Main extends Sprite{
      * The Setup Function it Start of Game Windows.
      */
     function setupGame():Void{
-        //! Haxe UI
-        //Toolkit.init();
-        //Toolkit.theme = 'dark';
-        //Toolkit.autoScale = false;
-        //haxe.ui.focus.FocusManager.instance.autoFocus = false; // Don't focus on UI elements when they first appear.
-        //haxe.ui.tooltips.ToolTipManager.defaultDelay = 200;
-        
         //! Calc Stage
         var stageWidth:Int = Lib.current.stage.stageWidth;
 		var stageHeight:Int = Lib.current.stage.stageHeight;
@@ -95,7 +89,7 @@ class Main extends Sprite{
             FlxG.autoPause = false;
             FlxG.mouse.visible = false;
         #end
-        stuff.util.debug.Log.init();
+        //stuff.util.debug.Log.init();
 		//stuff.network.api.Discord.initialize();
     }
 }

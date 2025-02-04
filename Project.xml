@@ -13,10 +13,12 @@
 	<window if="mobile" orientation="landscape" fullscreen="true" width="0" height="0" resizable="false" /> <!--Mobile-specific-->
 
 	<!-- _____________________________ Path Settings ____________________________ -->
-	<set name="BUILD_DIR" value="exit/debug" if="debug" />
-	<set name="BUILD_DIR" value="exit/release" unless="debug" />
-	<set name="BUILD_DIR" value="exit/32bit" if="32bit" />
+	<set name="BUILD_DIR" value="artifacts/debug" if="debug" />
+	<set name="BUILD_DIR" value="artifacts/64x" unless="debug" />
+	<set name="BUILD_DIR" value="artifacts/32x" if="32bit" />
+
 	<classpath name="src" />
+
 	<define name="PRELOAD_ALL" unless="web" />
 	<define name="NO_PRELOAD_ALL" unless="PRELOAD_ALL" />
 	<section if="PRELOAD_ALL">
@@ -25,20 +27,21 @@
 	<section if="NO_PRELOAD_ALL">
 		<library name="shared" preload="false" />
 	</section>
-	<library name="stuff" preload="false" />
-	<assets path="CHANGELOG.md" rename="changelog.txt"/>
 	<assets path="assets/shared/fonts" embed="true" />
 	<assets path="assets/shared" library="shared" exclude="*.fla|*.ogg|*.wav" if="web" />
 	<assets path="assets/shared" library="shared" exclude="*.fla|*.mp3|*.wav" unless="web" />
 	<assets path="assets/example_mods" library="mods" rename='mods' exclude="*.fla|*.ogg|*.wav" if="web" />
 	<assets path="assets/example_mods" library="mods" rename='mods' exclude="*.fla|*.mp3|*.wav" unless="web" />
+	<assets path="CHANGELOG.md" rename="updatelog.txt"/>
 
 	<!-- _______________________________ Libraries ______________________________ -->
-	<haxelib name="flixel" /> <!-- Game engine -->
+	<haxelib name="flixel" />
 	<haxedev set="webgl" />
-	<haxelib name="flixel-addons" /> <!-- Additional utilities for Flixel -->
-	<haxelib name="hscript" /> <!-- Scripting -->
-	<haxelib name="hxcpp-debug-server" if="desktop debug" /> <!-- VSCode debug support -->
+	<haxelib name="flixel-addons" />
+	<haxelib name="hscript" />
+	<haxelib name="flixel-ui" />
+	<haxelib name="json2object" />
+	<haxelib name="hxcpp-debug-server" if="desktop debug" />
 
 	<!-- ______________________________ Haxedefines _____________________________ -->
 	<haxedef name="FLX_NO_FOCUS_LOST_SCREEN" /> <!--Disable the Flixel core focus lost screen-->

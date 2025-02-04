@@ -14,7 +14,7 @@ class CrashHandler{
         var name:String = MainCore.NAME == null ? 'Unknown' : MainCore.NAME.replace("'", "");
         var nameSub:String = name.replace(" ", "");
         var timeStamp:String = stuff.util.DateUtil.getFormattedCustomDate(true);
-        folder = "assets/shared/crash/"; //./engine/crash/
+        folder = "assets/crash/";
         path = folder + '${nameSub}_' + timeStamp + ".txt";
     
         for (stackItem in callStack){
