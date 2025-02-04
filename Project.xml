@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<project>
+	<!-- _________________________ Application Settings _________________________ -->
+	<app title="NG's Engine - Player" file="NGE" packageName="com.nge.player" package="com.nge.player" main="Main" version="0.1" company="HiroSky" />
+	<set name="APP_ID" value="0x0100f6c013bbc000" />
+	<app preloader="flixel.system.FlxPreloader" />
+	<set name="SWF_VERSION" value="11.8" />
+
+	<!-- ____________________________ Window Settings ___________________________ -->
+	<window width="1280" height="720" fps="60" background="#000000" hardware="true" vsync="false" /> <!--These window settings apply to all targets-->
+	<window if="html5" resizable="true" /> <!--HTML5-specific-->
+	<window if="desktop" orientation="landscape" fullscreen="false" resizable="false" vsync="false" /> 	<!--Desktop-specific-->
+	<window if="mobile" orientation="landscape" fullscreen="true" width="0" height="0" resizable="false" /> <!--Mobile-specific-->
+
+	<!-- _____________________________ Path Settings ____________________________ -->
+	<set name="BUILD_DIR" value="exit/debug" if="debug" />
+	<set name="BUILD_DIR" value="exit/release" unless="debug" />
+	<set name="BUILD_DIR" value="exit/32bit" if="32bit" />
+	<classpath name="src" />
+	<define name="PRELOAD_ALL" unless="web" />
+	<define name="NO_PRELOAD_ALL" unless="PRELOAD_ALL" />
+	<section if="PRELOAD_ALL">
+		<library name="shared" preload="true" />
+	</section>
+	<section if="NO_PRELOAD_ALL">
+		<library name="shared" preload="false" />
+	</section>
+	<library name="stuff" preload="false" />
+	<assets path="CHANGELOG.md" rename="changelog.txt"/>
+	<assets path="assets/shared/fonts" embed="true" />
+	<assets path="assets/shared" library="shared" exclude="*.fla|*.ogg|*.wav" if="web" />
+	<assets path="assets/shared" library="shared" exclude="*.fla|*.mp3|*.wav" unless="web" />
+	<assets path="assets/example_mods" library="mods" rename='mods' exclude="*.fla|*.ogg|*.wav" if="web" />
+	<assets path="assets/example_mods" library="mods" rename='mods' exclude="*.fla|*.mp3|*.wav" unless="web" />
+
+	<!-- _______________________________ Libraries ______________________________ -->
+	<haxelib name="flixel" /> <!-- Game engine -->
+	<haxedev set="webgl" />
+	<haxelib name="flixel-addons" /> <!-- Additional utilities for Flixel -->
+	<haxelib name="hscript" /> <!-- Scripting -->
+	<haxelib name="hxcpp-debug-server" if="desktop debug" /> <!-- VSCode debug support -->
+
+	<!-- ______________________________ Haxedefines _____________________________ -->
+	<haxedef name="FLX_NO_FOCUS_LOST_SCREEN" /> <!--Disable the Flixel core focus lost screen-->
+	<haxedef name="FLX_NO_DEBUG" unless="debug || FORCE_DEBUG_VERSION" /> <!--Disable the Flixel core debugger. Automatically gets set whenever you compile in release mode!-->
+	<haxedef name="NAPE_RELEASE_BUILD" unless="debug" /> <!--Enable this for Nape release builds for a serious peformance improvement-->
+
+	<!-- _________________________________ Custom _______________________________ -->	
+	<!-- Skip the Intro -->
+	<section if="debug">
+	</section>
+
+	<section>
+		<haxedef name="openfl-enable-handle-error" />
+	</section>
+
+	<!-- HaxeFlixel Icon (The Engine Icons)-->
+	<icon path="stuff/icon/icon16.png" size='16'/>
+	<icon path="stuff/icon/icon32.png" size='32'/>
+	<icon path="stuff/icon/icon64.png" size='64'/>
+	<icon path="stuff/icon/icon128.png" size='128'/>
+	<icon path="stuff/icon/icon256.png" size='256'/>
+	<icon path="stuff/icon/icon512.png" size='512'/>
+	<icon path="stuff/icon/iconOG.png" />
+</project>
