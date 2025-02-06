@@ -1,4 +1,5 @@
 package stuff;
+
 import sys.io.File;
 import haxe.io.Path;
 import sys.FileSystem;
@@ -36,23 +37,9 @@ class Paths{
      * @param path The path of the directory to check/create.
      * @return The path of the directory.
      */
-    public static function folderSystem(path:String, isTrace = false):String{
-        if (!FileSystem.exists(path)){
-            try{
-                FileSystem.createDirectory(path);
-                var name = "Directory created: " + path;
-                if (!isTrace)
-                    Log.print(name);
-                else
-                    Log.print(name);
-            }catch (error:Dynamic){
-                var name = "Error creating directory: " + error;
-                if (!isTrace)
-                    Log.print(name);
-                else
-                    Log.print(name);
-            }
-        }
+    public static function folderSystem(path:String):String{
+        if (!FileSystem.exists(path))
+            FileSystem.createDirectory(path);
         return path;
     }
 
@@ -66,37 +53,21 @@ class Paths{
      * @param file The path of the file.
      * @return The path of the file.
      */
-    public static function fileSystem(file:String, isTrace = false):String{
-        folderSystem(Path.directory(file), isTrace);
-        if (!FileSystem.exists(file)){
-            try{
-                File.saveContent(file, ""); // Create an empty file
-                var name = "File created: " + file;
-                if (!isTrace)
-                    Log.print(name);
-                else
-                    Log.print(name);
-            }catch (error:Dynamic){
-                var name = "Error creating file: " + error;
-                if (!isTrace)
-                    Log.print(name);
-                else
-                    Log.print(name);
-            }
-        }
+    public static function fileSystem(file:String):String{
+        folderSystem(Path.directory(file));
+        if (!FileSystem.exists(file))
+            File.saveContent(file, "");
         return file;
     }
 
 
     static function getPath(file:String, type:AssetType, ?lib:String):String{
         if (lib != null) return getLibraryPath(file, lib);
-
         if (currentLevel != null){
             var levelPath:String = getLibraryPathForce(file, currentLevel);
             if (OpenFlAssets.exists(levelPath, type))
                 return levelPath;
         }
-
         var levelPath:String = getLibraryPathForce(file, 'shared');
         if (OpenFlAssets.exists(levelPath, type)) return levelPath;
         return getModsPath(file);
@@ -113,11 +84,11 @@ class Paths{
 
     static inline function getModsPath(file:String):String
         return 'assets/mods/$file';
-    
+
 
     public static function file(file:String, type:AssetType = TEXT, ?lib:String):String
         return getPath(file, type, lib);
-    
+
 
     /**
      * [Extesion file]
@@ -134,7 +105,6 @@ class Paths{
             case 'o': i = 'otf';
             case 'm': i = 'tmx';
         }
-
         return (i != null ? '.$i' : '.$key');
     }
 
@@ -164,7 +134,6 @@ class Paths{
             i = 'data';
         else
             i = 'images';
-
         return getPath('$i/$key' + e('t'), TEXT, lib);
     }
 
@@ -181,7 +150,6 @@ class Paths{
             i = 'data';
         else
             i = 'images';
-
         return getPath('$i/$key' + e('x'), TEXT, lib);
     }
 
@@ -198,7 +166,6 @@ class Paths{
             i = 'data';
         else
             i = 'images';
-
         return getPath('i$/$key' + e('j'), TEXT, lib);
     }
 
@@ -211,7 +178,7 @@ class Paths{
      */
     public static function sound(key:String, ?lib:String):String
         return getPath('sounds/$key.${CoreData.EXT_SOUND}', SOUND, lib);
-    
+
 
     /**
      * [Sound random]
@@ -222,7 +189,7 @@ class Paths{
      */
     public static function soundRandom(key:String, min:Int, max:Int, ?lib:String):String
         return sound(key + FlxG.random.int(min, max), lib);
-    
+
 
     /**
      * [Music file]
@@ -238,9 +205,10 @@ class Paths{
         //return 'songs:assets/songs/${song.toLowerCase()}/Vocals$suffix.${CoreData.EXT_SOUND}';
     //}
 
+
     //public static function inst(song:String, ?suffix:String = ''):String
         //return 'songs:assets/songs/${song.toLowerCase()}/Inst$suffix.${CoreData.EXT_SOUND}';
-    
+
 
     //! Images Paths
     /**
@@ -250,34 +218,34 @@ class Paths{
      */
     public static function image(key:String, ?lib:String):String
         return getPath('images/$key' + e('p'), IMAGE, lib);
-    
+
 
     public static function animateAtlas(path:String, ?library:String):String
         return getLibraryPath('images/$path', library);
-    
+
 
     /*public static function ui(key:String, ?library:String):String{
         return xml('ui/$key', library);
     }*/
 
+
     public static function getSparrowAtlas(key:String, ?lib:String):FlxAtlasFrames
         return FlxAtlasFrames.fromSparrow(image(key, lib), xml(key, lib, false));
-    
+
 
     public static function getPackerAtlas(key:String, ?lib:String):FlxAtlasFrames
         return FlxAtlasFrames.fromSpriteSheetPacker(image(key, lib), txt(key, lib, false));
-    
+
 
     public static function videos(key:String, ?library:String):String
         return getPath('videos/$key.${CoreData.EXT_VIDEO}', BINARY, library ?? 'videos');
-    
+
 
     //! Shaders Paths
     public static function frag(key:String, ?library:String):String
         return getPath('shaders/$key.frag', TEXT, library);
-    
+
 
     public static function vert(key:String, ?library:String):String
         return getPath('shaders/$key.vert', TEXT, library);
-    
 }

@@ -74,7 +74,7 @@ Plugins/*/Intermediate/*
 DerivedDataCache/*
 
 # The Engine Export
-/build
+/artifacts
 
 "files.exclude":{
  "**/.unittest": true

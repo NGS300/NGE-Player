@@ -1,7 +1,6 @@
 package;
-import flixel.FlxG;
+
 import flixel.FlxGame;
-//import haxe.ui.Toolkit;
 import openfl.display.Sprite;
 import openfl.events.Event;
 import openfl.Lib;
@@ -12,11 +11,11 @@ import stuff.util.debug.FPSCounter;
  * The Main class which initializes HaxeFlixel and starts the game in its initial state.
  */
 class Main extends Sprite{
-    //private var data = backstuff.save.SaveData;
+    private var data = stuff.util.save.SaveData;
     public static var memoryCounter:MemoryCounter;
     public static var fpsCounter:FPSCounter;
     public var config = {
-        initialState: null,//backstuff.state.Title,
+        initialState: null,//stuff.state.Title,
         fullscreen: false,
         splash: false,
         width: 1280,
@@ -30,11 +29,10 @@ class Main extends Sprite{
     };
     public static function main():Void
         Lib.current.addChild(new Main());
-
     public function new(){
 		super();
-        //stuff.util.WindowUtil.initWindowEvents();
-        //WindowUtil.setWindowTitle(false);
+        stuff.util.debug.Log.init();
+        stuff.util.WindowUtil.init();
 		(stage != null ? init() : addEventListener(Event.ADDED_TO_STAGE, init));
 	}
 	private function init(?E:Event){
@@ -60,7 +58,7 @@ class Main extends Sprite{
 		}
 
         //! Main
-        //data.init();
+        data.init();
         //Achievements.load();
         var game = new FlxGame(config.width, config.height, config.initialState, config.rate, config.rate, !config.splash, config.fullscreen);
         //@:privateAccess
@@ -69,27 +67,25 @@ class Main extends Sprite{
         //Volume.load();
 
         //! Stuff
-        var showCounter = true;//data.get("bool.memoryFps");
         #if !mobile
+            Lib.current.stage.align = "tl";
+            Lib.current.stage.scaleMode = openfl.display.StageScaleMode.NO_SCALE;
+            var showfps = data.get("bool.showFPS");
             fpsCounter = new FPSCounter(14, 0xFFFFFF);
-            fpsCounter.visible = showCounter;
+            fpsCounter.visible = showfps;
             memoryCounter = new MemoryCounter(2, 0xFFFFFF);
-            memoryCounter.visible = showCounter;
+            memoryCounter.visible = (!showfps ? false : data.get("bool.showMemory"));
             addChild(fpsCounter);
             #if !html5
                 addChild(memoryCounter);
             #else
                 fpsCounter.y = 2;
             #end
-            Lib.current.stage.align = "tl";
-            Lib.current.stage.scaleMode = openfl.display.StageScaleMode.NO_SCALE;
-            //FlxG.autoPause = data.get("bool.autoPause");
+            flixel.FlxG.autoPause = data.get("bool.autoPause");
         #end
         #if html5
             FlxG.autoPause = false;
             FlxG.mouse.visible = false;
         #end
-        //stuff.util.debug.Log.init();
-		//stuff.network.api.Discord.initialize();
     }
 }

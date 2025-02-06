@@ -29,10 +29,10 @@ class WindowUtil{
       #else
         FlxG.openURL(targetUrl); // This should work on Windows and HTML5.
       #end
-      Log.print('Url: ' + targetUrl);
+      Log.info('Url: ' + targetUrl);
     #else
       var name = 'Cannot open URLs on this platform.'; 
-      Log.print(name, 'warning');
+      Log.warn(name);
       throw name;
     #end
   }
@@ -51,10 +51,10 @@ class WindowUtil{
       #elseif linux
         Sys.command('open', [targetPath]);
       #end
-      Log.print('Folder: ' + targetPath);
+      Log.info('Folder: ' + targetPath);
     #else
       var name = 'Cannot open URLs on this platform.'; 
-      Log.print(name, 'warning');
+      Log.warn(name);
       throw name;
     #end
   }
@@ -94,10 +94,10 @@ class WindowUtil{
         // TODO: unsure of the linux equivalent to opening a folder and then "selecting" a file.
         Sys.command('open', [targetPath]);
       #end
-      Log.print('Select: ' + targetPath);
+      Log.info('Select: ' + targetPath);
     #else
       var name = 'Cannot open URLs on this platform.'; 
-      Log.print(name, 'warning');
+      Log.warn(name);
       throw name;
     #end
   }
@@ -106,22 +106,22 @@ class WindowUtil{
   /**
    * Dispatched when the game window is closed.
    */
-  public static final windowExit:FlxTypedSignal<Int->Void> = new FlxTypedSignal<Int->Void>();
+  public static final winExit:FlxTypedSignal<Int->Void> = new FlxTypedSignal<Int->Void>();
 
 
   /**
    * Wires up FlxSignals that happen based on window activity.
    * For example, we can run a callback when the window is closed.
    */
-  public static function initWindowEvents():Void{
+  public static function init():Void{
     // onUpdate is called every frame just before rendering.
     // onExit is called when the game window is closed.
     //Debug.initialize();
     //Gamejolt.initialize();
 		//Discord.initialize();
-    Lib.current.stage.application.onExit.add(function(exitCode:Int){
+    Lib.current.stage.application.onExit.add(function(exit:Int){
       //Discord.shutdown();
-      windowExit.dispatch(exitCode);
+      winExit.dispatch(exit);
     });
 
     /*openfl.Lib.current.stage.addEventListener(openfl.events.KeyboardEvent.KEY_DOWN, (e:openfl.events.KeyboardEvent) ->{
@@ -159,9 +159,7 @@ class WindowUtil{
     else
       result = engi.title;
 
-    #if debug
-      Log.print('New Title: ${result}');
-    #end
+    Log.info('New Title: ${result}');
     return Application.current.window.title = result;
   }
 
@@ -181,14 +179,12 @@ class WindowUtil{
 
     if (!ignore[1]) win.y += result[1];
 
-    #if debug
-      var noreX = ignore[0];
-      var noreY = ignore[1];
-      var colide = (noreX && noreY ? '' : ', ');
-      var showX = (noreX ? '' : 'x: (last: $lastX --> new: ${result[0]})');
-      var showY = (noreY ? '' : 'y: (last: $lastY --> new: ${result[1]}');
-      Log.print('Moving to: ${showX}${colide}${showY}');
-    #end
+    var noreX = ignore[0];
+    var noreY = ignore[1];
+    var colide = (noreX && noreY ? '' : ', ');
+    var showX = (noreX ? '' : 'x: (last: $lastX --> new: ${result[0]})');
+    var showY = (noreY ? '' : 'y: (last: $lastY --> new: ${result[1]}');
+    Log.info('Moving to: ${showX}${colide}${showY}');
   }
 
 
@@ -205,14 +201,12 @@ class WindowUtil{
 
     if (!ignore[1]) win.y = result[1];
 
-    #if debug
-      var noreX = ignore[0];
-      var noreY = ignore[1];
-      var colide = (noreX && noreY ? '' : ', ');
-      var showX = (noreX ? '' : 'x: ${result[0]}');
-      var showY = (noreY ? '' : 'y: ${result[1]}');
-      Log.print('New Position: ${showX}${colide}${showY}');
-    #end
+    var noreX = ignore[0];
+    var noreY = ignore[1];
+    var colide = (noreX && noreY ? '' : ', ');
+    var showX = (noreX ? '' : 'x: ${result[0]}');
+    var showY = (noreY ? '' : 'y: ${result[1]}');
+    Log.info('New Position: ${showX}${colide}${showY}');
   }
 
 
@@ -226,9 +220,7 @@ class WindowUtil{
       case 'title': 'title';
       default: getName;
     }
-    #if debug
-      Log.print('New Get: $result');
-    #end
+    Log.info('New Get: $result');
     return Application.current.meta.get(result);
   }
 }
