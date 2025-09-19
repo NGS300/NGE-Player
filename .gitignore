@@ -79,3 +79,5 @@ DerivedDataCache/*
 "files.exclude":{
  "**/.unittest": true
 }
+
+*_old.*
