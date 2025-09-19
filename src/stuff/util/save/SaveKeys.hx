@@ -1,9 +1,9 @@
 package stuff.util.save;
 
-import stuff.util.save.raw.RawData;
+import stuff.util.save.raw.RawKeys;
 
-class SaveData extends RawData{
-    static final raw = RawData;
+class SaveKeys extends RawKeys{
+    static final raw = RawKeys;
     /**
      * Retrieve data from the raw data structure using a field name.
      * @param name The name of the data field.
@@ -45,25 +45,38 @@ class SaveData extends RawData{
         return raw.loadData(); // Load data if the canSave flag is false.
     }
 
+    public static function data(mode:String, name:String, value:Dynamic){
+        var id = raw.defaultData;
+        switch (mode){
+            case 'keyboard' | 'board':
+                id('keyboard.$name', value);
+            case 'gamepad' | 'pad':
+                id('gamepad.$name', value);
+        }
+        
+    }
+
     public static function init():Void{
-		var data = raw.defaultData;
+        // Loaded File
 		dataFile(false);
 
-        // String data
-        data("string.language", 'english');
-	
-		// Bool data
-        data("bool.antialiasing", true);
-        data("bool.autoPause", true);
-        data("bool.showMemory", true);
-        data("bool.showFPS", true);
-        data("bool.volumeMute", false);
+        //* KeyBoard
 
-        // Int data
-		data("int.fpsCap", (cast(openfl.Lib.current.getChildAt(0), Main)).config.rate, ['>', 'int', 360]);
+        // Notes
+        data('board', 'upNOTE', 74);
+        data('board', 'downNOTE', 70);
+        data('board', 'middleNOTE', 32);
+        data('board', 'leftNOTE', 68);
+        data('board', 'rightNOTE', 75);
 
-        // Float data
-        data("float.volume", 1.0);
+        // UI
+        data('board', 'exit', 27); //backspace(8)
+        data('board', 'enter', 13); // space(32)
+        data('board', 'up', 38);
+        data('board', 'down', 40);
+        data('board', 'left', 37);
+        data('board', 'right', 39);
+        
 
         // ReSaved File
 		dataFile(true);

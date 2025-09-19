@@ -9,8 +9,8 @@ import haxe.zip.Compress;
 import haxe.zip.Uncompress;
 import haxe.io.Bytes;
 
-// Define the structure for storing different types of data
-typedef DataVar = {
+// Define the structure for storing different types of Variables
+typedef DataVars = {
     var string:Map<String, String>; // Map to store string values
     var bool:Map<String, Bool>;  // Map to store boolean values
     var int:Map<String, Int>;     // Map to store integer values
@@ -20,11 +20,11 @@ typedef DataVar = {
 /**
  * [GameSave data-Raw]
  */
-class RawSave{
+class RawData{
     static final jsonFormat:Bool = true; // Flag to determine if data should be saved in JSON format
 
     // Initialize the data variable with maps for boolean, integer, and float values
-    public static var data:DataVar = {
+    public static var data:DataVars = {
         string: new Map<String, String>(),
         bool: new Map<String, Bool>(),
         int: new Map<String, Int>(),

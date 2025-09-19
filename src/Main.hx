@@ -12,6 +12,7 @@ import stuff.util.debug.FPSCounter;
  */
 class Main extends Sprite{
     private var data = stuff.util.save.SaveData;
+    private var keys = stuff.util.save.SaveKeys;
     public static var memoryCounter:MemoryCounter;
     public static var fpsCounter:FPSCounter;
     public var config = {
@@ -59,6 +60,7 @@ class Main extends Sprite{
 
         //! Main
         data.init();
+        keys.init();
         //Achievements.load();
         var game = new FlxGame(config.width, config.height, config.initialState, config.rate, config.rate, !config.splash, config.fullscreen);
         //@:privateAccess

@@ -13,9 +13,9 @@
 	<window if="mobile" orientation="landscape" fullscreen="true" width="0" height="0" resizable="false" /> <!--Mobile-specific-->
 
 	<!-- _____________________________ Path Settings ____________________________ -->
-	<set name="BUILD_DIR" value="artifacts/debug" if="debug" />
-	<set name="BUILD_DIR" value="artifacts/64x" unless="debug" />
-	<set name="BUILD_DIR" value="artifacts/32x" if="32bit" />
+	<set name="BUILD_DIR" value="exit/debug" if="debug" />
+	<set name="BUILD_DIR" value="exit/64x" unless="debug" />
+	<set name="BUILD_DIR" value="exit/32x" if="32bit" />
 
 	<classpath name="src" />
 
