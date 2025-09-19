@@ -1,11 +1,33 @@
 package stuff.util;
 
 class SongUtil{
+    // Map from difficulty name -> int
     public static var difficulty:Map<String, Int> = [
-		'easy' => 0, // Skiped this shit
-		'normal' => 1,
-		'hard' => 2
-	];
+        'easy' => 0,
+        'normal' => 1,
+        'hard' => 2
+    ];
+
+    // Map from int -> difficulty name (inverse)
+    public static var difficultyInv:Map<Int, String> = [
+        0 => 'easy',
+        1 => 'normal',
+        2 => 'hard'
+    ];
+
+    /**
+     * Convert difficulty string to int
+     */
+    public static function diffToInt(diff:String):Int{
+        return difficulty.get(diff);
+    }
+
+    /**
+     * Convert difficulty int to string
+     */
+    public static function intToDiff(value:Int):String{
+        return difficultyInv.get(value);
+    }
 
     /**
 	 * Normalizes the folder name to be compatible with different naming variations.
@@ -23,5 +45,13 @@ class SongUtil{
 			default: {} // do nothing
 		}
 		return folder;
+	}
+
+    public static function fancyOpenURL(schmancy:String){
+		#if linux
+		    Sys.command('/usr/bin/xdg-open', [schmancy, "&"]);
+		#else
+		    FlxG.openURL(schmancy);
+		#end
 	}
 }

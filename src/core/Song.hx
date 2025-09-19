@@ -2,171 +2,204 @@ package core;
 
 import stuff.util.SongUtil;
 import stuff.Paths;
-import core.Section.SwagSection;
-import core.Section.SectionEvents;
 import haxe.Json;
-import haxe.format.JsonParser;
 import lime.utils.Assets;
 using StringTools;
 
-class Event{
-	public var name:String;
-	public var position:Float;
-	public var value:Float;
-	public var type:String;
-	public function new(name:String,pos:Float,value:Float,type:String){
-		this.name = name;
-		this.position = pos;
-		this.value = value;
-		this.type = type;
-	}
+// Represents a single note in the chart
+typedef SwagNote = {
+	var dir: Int;            // Arrow/key direction index
+	var time: Float;         // Time in milliseconds when the note should be hit
+	var sustainTime: Float;  // Duration for which the note should be held
 }
 
+// Represents a BPM change event inside a difficulty
+typedef BPMChange = {
+	var noteIndex:Int;       // Index of the note where BPM changes
+	var newBpm:Float;        // New BPM starting from this note
+}
+
+// Represents one difficulty of a song (e.g., normal, hard)
+typedef SwagDifficulty = {
+	var diffName: String;        // Name of the difficulty
+	var notes: Array<SwagNote>;  // Notes in this difficulty
+	var bpmChanges: Array<BPMChange>; // BPM changes in this difficulty
+}
+
+// Represents a full song with metadata and difficulties
 typedef SwagSong = {
-	var id:Map<String, Dynamic>;
-	var difficulty:Map<String, Int>;
-	var notes:Map<String, Dynamic>;
-	var players:Map<String, String>;
-    var eventSections:Array<SectionEvents>;
-	var eventObjects:Array<Event>;
+	var id: Map<String, Dynamic>;           // Song metadata (bpm, stage, version, etc.)
+	var diff: Map<String, SwagDifficulty>;  // All available difficulties
 }
 
+/**
+ * // this shit is same this
+ * public static var actualNotes:Array<SwagNote> = new Array<SwagNote>(); --->
+ * 
+ * like this
+ *  ---- >
+ 	var normalDiff:SwagDifficulty = Song.data.diff.get("normal");
+	if (normalDiff != null){
+		var notes:Array<SwagNote> = normalDiff.notes;
+		trace(notes.length);
+	}
+ */
+
+/**
+ * Song Datas
+ */
 class Song{
-	public var id:Map<String, Dynamic> = [
-		'stage' => '',
-		'song' => '',
-		'bpm' => '',
-		'speed' => '1',
-		'version' => '',
-		'canVoices' => 'true',
-		'validScore' => 'true'
+	// Base template data for a song
+	public static var data: SwagSong = {
+		id: (function(){
+			var m:Map<String, Dynamic> = new Map();
+			m.set('stage', '');       // Stage background name
+			m.set('song', '');        // Song name
+			m.set('bpm', '');         // Base BPM of the song
+			m.set('speed', 1.0);      // Scroll speed
+			m.set('version', '');     // Chart version
+			m.set('canVoices', true); // Whether voices are allowed
+			m.set('validScore', true);// Score validity
+			return m;
+		})(),
+		diff: new Map<String, SwagDifficulty>(), // Empty difficulty map
+	};
+
+	// Default playable characters
+	public static var players: Map<String, String> = [
+		'player1' => 'bf',       // Boyfriend
+		'player2' => 'unknown',  // Opponent
+		'player3' => ''          // Girlfriend (optional)
 	];
 
-	public var notes:Map<String, Dynamic> = [
-		'id' => new Array<SwagSection>(),
-		'style' => '',
-		'speed' => '1'
-	];
-
-	public var players:Map<String, String> = [
-		'player1' => 'bf',
-		'player2' => 'unknown',
-		'player3' => '' // (gfVersion)
-	];
-    public var eventSections:Array<SectionEvents>;
-	public var eventObjects:Array<Event>;
-
-	public function new(song, notes, bpm){
-		this.id.set('song', song);
-		this.notes.set('id', notes);
-		this.id.set('bpm', bpm);
-	}
-
-	public static function loadFromJsonRAW(rawJson:String){
-		while (!rawJson.endsWith("}"))
-			rawJson = rawJson.substr(0, rawJson.length - 1);
-		return parseJSON(rawJson);
-	}
-
-	public static function loadFromJson(folder:String, ?diff:String = "normal"):SwagSong{
+	/**
+	 * Loads a song from JSON files.
+	 * @param folder The folder where the song JSON files are located.
+	 * @param diff The difficulty to load (default "normal").
+	 * @return A SwagSong object with metadata and difficulty data.
+	 */
+	public static function loadJson(folder:String, ?diff:String = "normal"):SwagSong{
 		// Load meta.json
 		var metaRaw = Assets.getText(Paths.json(SongUtil.normalizeFolderName(folder) + "/meta.json")).trim();
 		while (!metaRaw.endsWith("}"))
 			metaRaw = metaRaw.substr(0, metaRaw.length - 1);
 		var metaData:Dynamic = Json.parse(metaRaw);
 
+		if (metaData.song == null)
+			throw "Invalid meta.json: missing 'song' key";
+		var metaSong:Dynamic = metaData.song;
+
 		// Load notes.json
 		var notesRaw = Assets.getText(Paths.json(SongUtil.normalizeFolderName(folder) + "/notes.json")).trim();
 		while (!notesRaw.endsWith("}"))
 			notesRaw = notesRaw.substr(0, notesRaw.length - 1);
-
 		var notesData:Dynamic = Json.parse(notesRaw);
-		if (notesData.notes == null)
-			throw "Invalid notes.json: missing 'notes' key";
+		if (notesData.difficulty == null)
+			throw "Invalid notes.json: missing 'difficulty' key";
 
-		// Ensure requested difficulty exists
-		if (!Reflect.hasField(notesData.notes, diff))
+		if (!Reflect.hasField(notesData.difficulty, diff))
 			throw "Invalid notes.json: requested difficulty '" + diff + "' does not exist!";
 
-		// Create SwagSong
-		var swag:SwagSong = {
-			id: cast metaData.id,
-			players: cast metaData.players,
-			eventSections: [],
-			eventObjects: [],
-			notes: new Map(),
-			difficulty: cast metaData.difficulty
-		};
-		swag.notes.set(diff, cast notesData.notes[SongUtil.difficulty.get(diff)].notes); // Populate only the chosen difficulty
+		// Create difficulty map
+		var diffs:Map<String, SwagDifficulty> = new Map();
+		var diffData:Dynamic = Reflect.field(notesData.difficulty, diff);
 
+		// Parse BPM changes if present
+		var bpmChanges:Array<BPMChange> = [];
+		if(diffData.bpmChanges != null){
+			for(change in cast(diffData.bpmChanges, Array<Dynamic>)){
+				bpmChanges.push({
+					noteIndex: change.noteIndex,
+					newBpm: change.newBpm
+				});
+			}
+		}
+
+		// Set difficulty
+		diffs.set(diff, {
+			diffName: diff,
+			notes: cast diffData.notes,
+			bpmChanges: bpmChanges
+		});
+
+		// Create SwagSong object
+		var swag:SwagSong = {
+			id: (function(){
+				var m:Map<String, Dynamic> = new Map();
+				m.set("song", metaSong.song);
+				m.set("stage", metaSong.stage);
+				m.set("bpm", metaSong.bpm);
+				m.set("speed", metaSong.speed);
+				m.set("version", metaSong.version);
+				m.set("canVoices", metaSong.canVoices);
+				m.set("validScore", true);
+				return m;
+			})(),
+			diff: diffs
+		};
 		trace("Successfully loaded song: " + swag.id.get("song") + " (" + diff + ")");
 		return swag;
 	}
 
-	public static function conversionChecks(song:SwagSong):SwagSong{
-		var ba = song.id.get('bpm');
-		var index = 0;
-		trace("conversion stuff " + song.id.get('song') + " " + song.id.get('notes').length);
-		var convertedStuff:Array<Song.Event> = [];
-
-		if (song.eventObjects == null)
-			song.eventObjects = [new Song.Event("Init BPM", 0, song.id.get('bpm'), "BPM Change")];
-
-		for (i in song.eventObjects){
-			var name = Reflect.field(i,"name");
-			var type = Reflect.field(i,"type");
-			var pos = Reflect.field(i,"position");
-			var value = Reflect.field(i,"value");
-			convertedStuff.push(new Song.Event(name, pos, value, type));
-		}
-
-		song.eventObjects = convertedStuff;
-		var arr:Array<SwagSection> = cast song.notes.get('id');
-		for (i in arr){
-			var currentBeat = 4 * index;
-			var currentSeg = TimingStruct.getTimingAtBeat(currentBeat);
-            var newBPM:Bool = false;
-            for (i in song.eventSections){
-                if (newBPM != false)
-                    newBPM = i.newBPM;
-            }
-			if (currentSeg == null) continue;
-
-			var beat:Float = currentSeg.startBeat + (currentBeat - currentSeg.startBeat);
-			if (/*i.newBPM*/ newBPM && i.bpm != ba){
-				trace("converting changebpm for section " + index);
-				ba = i.bpm;
-				song.eventObjects.push(new Song.Event("BPM Change " + index, beat, i.bpm, "New BPM"));
-			}
-
-			for(ii in i.sectionNotes){
-				if (ii[3] == null)
-					ii[3] = false;
-			}
-			index++;
-		}
-		return song;
-	}
-
+	/**
+	 * Parses raw JSON into a SwagSong object.
+	 * @param rawJson The raw JSON string containing song data.
+	 * @return A SwagSong object with metadata and all difficulties.
+	 */
 	public static function parseJSON(rawJson:String):SwagSong{
 		var raw:Dynamic = Json.parse(rawJson);
 		if (raw.song == null)
 			throw "Invalid JSON: missing 'song' key";
+		var songData:Dynamic = raw.song;
 
-		var swagShit:SwagSong = cast raw.song;
+		var diffs:Map<String, SwagDifficulty> = new Map();
 		var hasDiff:Bool = false;
-		for (difficultyName in Reflect.fields(swagShit.notes)){ // Check for at least one valid difficulty (skip "easy")
-			if (difficultyName.toLowerCase() == "easy") continue; // ignore easy
 
-			var diffData:Dynamic = swagShit.notes[difficultyName];
-			if (diffData != null && diffData.notes != null)
-				hasDiff = true; // at least one difficulty exists
+		// Parse difficulties (skip "easy")
+		if (raw.difficulty != null){
+			for(difficultyName in Reflect.fields(raw.difficulty)){
+				if (difficultyName.toLowerCase() == "easy") continue;
+
+				var diffData:Dynamic = Reflect.field(raw.difficulty, difficultyName);
+				if (diffData != null && diffData.notes != null){
+					hasDiff = true;
+
+					// Parse BPM changes
+					var bpmChanges:Array<BPMChange> = [];
+					if(diffData.bpmChanges != null){
+						for(change in cast(diffData.bpmChanges, Array<Dynamic>)){
+							bpmChanges.push({
+								noteIndex: change.noteIndex,
+								newBpm: change.newBpm
+							});
+						}
+					}
+
+					// Set difficulty
+					diffs.set(difficultyName, {
+						diffName: difficultyName,
+						notes: cast diffData.notes,
+						bpmChanges: bpmChanges
+					});
+				}
+			}
 		}
-
 		if (!hasDiff)
 			throw "Invalid JSON: at least one difficulty must exist";
 
-		swagShit.id.set("validScore", true);
-		return swagShit;
+		// Build metadata
+		var idMap:Map<String, Dynamic> = new Map();
+		idMap.set("song", songData.song);
+		idMap.set("stage", songData.stage);
+		idMap.set("bpm", songData.bpm);
+		idMap.set("speed", songData.speed);
+		idMap.set("version", songData.version);
+		idMap.set("canVoices", songData.canVoices);
+		idMap.set("validScore", true);
+
+		return {
+			id: idMap,
+			diff: diffs
+		};
 	}
 }
