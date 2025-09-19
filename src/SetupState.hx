@@ -1,8 +1,19 @@
 package;
 
+import flixel.FlxState;
+
 /**
- * TV State of Setup Game
+ * Modern "BIOS" for the advanced config shit
  */
-class SetupState{
-    
+class SetupState extends FlxState
+{
+    override function create() 
+    {
+        
+    }
+
+    override function update(elapsed: Float) 
+    {
+        
+    }
 }

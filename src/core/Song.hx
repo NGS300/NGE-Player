@@ -22,12 +22,18 @@ class Event{
 	}
 }
 
+typedef SwagNote = {
+	var dir: Int;
+	var time: Float;
+	var sustainTime: Float;
+}
+
 typedef SwagSong = {
 	var id:Map<String, Dynamic>;
 	var difficulty:Map<String, Int>;
 	var notes:Map<String, Dynamic>;
 	var players:Map<String, String>;
-    var eventSections:Array<SectionEvents>;
+	var eventSections:Array<SectionEvents>;
 	var eventObjects:Array<Event>;
 }
 
@@ -43,9 +49,9 @@ class Song{
 	];
 
 	public var notes:Map<String, Dynamic> = [
-		'id' => new Array<SwagSection>(),
+		'id' => new Array<SwagNote>(),
 		'style' => '',
-		'speed' => '1'
+		'speed' => 1.0
 	];
 
 	public var players:Map<String, String> = [
@@ -53,7 +59,7 @@ class Song{
 		'player2' => 'unknown',
 		'player3' => '' // (gfVersion)
 	];
-    public var eventSections:Array<SectionEvents>;
+	public var eventSections:Array<SectionEvents>;
 	public var eventObjects:Array<Event>;
 
 	public function new(song, notes, bpm){
@@ -125,11 +131,11 @@ class Song{
 		for (i in arr){
 			var currentBeat = 4 * index;
 			var currentSeg = TimingStruct.getTimingAtBeat(currentBeat);
-            var newBPM:Bool = false;
-            for (i in song.eventSections){
-                if (newBPM != false)
-                    newBPM = i.newBPM;
-            }
+			var newBPM:Bool = false;
+			for (i in song.eventSections){
+				if (newBPM != false)
+					newBPM = i.newBPM;
+			}
 			if (currentSeg == null) continue;
 
 			var beat:Float = currentSeg.startBeat + (currentBeat - currentSeg.startBeat);
