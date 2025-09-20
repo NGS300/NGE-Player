@@ -6,7 +6,7 @@ import flixel.FlxSprite;
 
 class Slider extends FlxUISpriteButton
 {
-    //private var sliderSprite: FlxSprite;
+    //private var sliderSprite: FlxSprite
     public var sliderActive: Bool = false;
     public var displayText: String = "";
 
