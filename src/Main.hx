@@ -16,7 +16,7 @@ class Main extends Sprite{
     public static var memoryCounter:MemoryCounter;
     public static var fpsCounter:FPSCounter;
     public var config = {
-        initialState: null,//stuff.state.Title,
+        initialState: SetupState,//stuff.state.Title,
         fullscreen: false,
         splash: false,
         width: 1280,

@@ -50,7 +50,7 @@ class Conductor{
 		bpmChangeMap = [];
 
 		// Base BPM from metadata
-		var curBPM:Float = cast song.id.get("bpm");
+		var curBPM:Null<Float> = cast song.id.get("bpm");
 		if (curBPM == null) curBPM = 100;
 
 		// Get notes for the chosen difficulty
