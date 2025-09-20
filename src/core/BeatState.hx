@@ -7,6 +7,7 @@ import flixel.addons.ui.FlxUIState;
  * Handles beat/step timing updates for the current song
  */
 class BeatState extends FlxUIState{
+    private var systemClock:String = '';
     private var lastBeat:Float = 0;
     private var lastStep:Float = 0;
 
@@ -66,6 +67,8 @@ class BeatState extends FlxUIState{
                 Conductor.crochet = ((60 / Conductor.bpm) * 1000);
             }
         }
+        systemClock = (Date.now().getDate() < 10 ? "0" : "") + Date.now().getDate() + "/" + (Date.now().getMonth() < 10 ? "0" : "") + (Date.now().getMonth() + 1) + "/" + Date.now().getFullYear() + 
+		' - ' + (Date.now().getHours() < 10 ? "0" : "") + Date.now().getHours() + ":" + (Date.now().getMinutes() < 10 ? "0" : "") + Date.now().getMinutes() + ":" + (Date.now().getSeconds() < 10 ? "0" : "")  + Date.now().getSeconds();
         super.update(elapsed);
     }
 

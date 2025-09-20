@@ -1,58 +1,46 @@
 package;
 
-import stuff.setup.ui.Slider;
-import stuff.util.DateUtil;
-import haxe.io.Path;
-import flixel.FlxG;
+import core.BeatState;
 import flixel.text.FlxText;
 import stuff.Paths;
-import flixel.FlxState;
 import flixel.FlxSprite;
 
 /**
- * TV State of Setup Game
+ * Modern "BIOS" for the advanced config shit
  */
-class SetupState extends FlxState
-{
-    static var dateText:FlxText;
-
-
-    override function create() 
-    {
-
-        //bg = new FlxSprite().loadGraphic("assets/shared/images/bg_config.png");
-        var bg:FlxSprite = new FlxSprite().loadGraphic(Paths.image("bg_config", "shared"));
-        var bg_sidebar:FlxSprite = new FlxSprite().loadGraphic(Paths.image("sidebar_config", "shared"));
-        var bg_header:FlxSprite = new FlxSprite().loadGraphic(Paths.image("header_config", "shared"));
-        
-        var titleText:FlxText = new FlxText(0, 18);
-        titleText.text = "Game configuration";
-        titleText.font = Paths.font("segoe_ui");
-        titleText.size = 28;
-        titleText.alignment = FlxTextAlign.CENTER;
-        titleText.x = (FlxG.width - titleText.width) / 2;
-
-        dateText = new FlxText(0, 18);
-        dateText.text = DateUtil.getFormattedDate();
-        dateText.font = Paths.font("segoe_ui");
-        dateText.size = 24;
-        dateText.alignment = FlxTextAlign.CENTER;
-        dateText.x = (FlxG.width - titleText.width) / 2;
-
-        var sliderTest: Slider = new Slider(512, 300);
-        sliderTest.displayText = "Disdhjad";
-
+class SetupState extends BeatState{
+    var clock:FlxText;
+    override function create(){
+        super.create();
+        var set = function(key:String):String{
+            return Paths.image(key + '_config', 'shared');
+        };
+        var bg = new FlxSprite().loadGraphic(set('bg'));
+        bg.screenCenter();
         add(bg);
-        add(bg_sidebar);
-        add(bg_header);
-        add(titleText);
-        add(dateText);
 
-        add(sliderTest);
+        var sidebar = new FlxSprite().loadGraphic(set('sidebar'));
+        sidebar.screenCenter(Y);
+        add(sidebar);
+
+        var header = new FlxSprite().loadGraphic(set('header'));
+        header.screenCenter(X);
+        add(header);
+
+        clock = new FlxText(1000, 40, '');
+        clock.font = Paths.font('segoe_ui');
+        clock.size = 24;
+        add(clock);
+
+        var bios = new FlxText(0, 16,'Game Configuration');
+        bios.x = ((flixel.FlxG.width - bios.width) / 2) - 70;
+        bios.font = Paths.font('segoe_ui');
+        bios.size = 20;
+        add(bios);
     }
 
-    override function update(elapsed:Float) 
-    {
-        dateText.text = DateUtil.getFormattedDate();
+    override function update(elapsed: Float){
+        clock.text = systemClock;
+        super.update(elapsed);
     }
 }

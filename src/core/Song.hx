@@ -106,8 +106,8 @@ class Song{
 
 		// Parse BPM changes if present
 		var bpmChanges:Array<BPMChange> = [];
-		if(diffData.bpmChanges != null){
-			for(change in cast(diffData.bpmChanges, Array<Dynamic>)){
+		if (diffData.bpmChanges != null){
+			for (change in cast(diffData.bpmChanges, Array<Dynamic>)){
 				bpmChanges.push({
 					noteIndex: change.noteIndex,
 					newBpm: change.newBpm
@@ -157,7 +157,7 @@ class Song{
 
 		// Parse difficulties (skip "easy")
 		if (raw.difficulty != null){
-			for(difficultyName in Reflect.fields(raw.difficulty)){
+			for (difficultyName in Reflect.fields(raw.difficulty)){
 				if (difficultyName.toLowerCase() == "easy") continue;
 
 				var diffData:Dynamic = Reflect.field(raw.difficulty, difficultyName);
@@ -166,8 +166,8 @@ class Song{
 
 					// Parse BPM changes
 					var bpmChanges:Array<BPMChange> = [];
-					if(diffData.bpmChanges != null){
-						for(change in cast(diffData.bpmChanges, Array<Dynamic>)){
+					if (diffData.bpmChanges != null){
+						for (change in cast(diffData.bpmChanges, Array<Dynamic>)){
 							bpmChanges.push({
 								noteIndex: change.noteIndex,
 								newBpm: change.newBpm
