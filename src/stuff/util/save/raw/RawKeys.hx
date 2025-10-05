@@ -9,7 +9,13 @@ import haxe.zip.Compress;
 import haxe.zip.Uncompress;
 import haxe.io.Bytes;
 import flixel.input.keyboard.FlxKey;
+import flixel.FlxG;
 import flixel.input.gamepad.FlxGamepadInputID;
+
+// The values INT with represebt the states of FlxInput:
+// 1 == JUST_PRESSED
+// 2 == PRESSED
+// 4 == JUST_RELEASED
 
 
 // Define the structure for storing different types of Variables
@@ -30,7 +36,6 @@ class RawKeys{
         gamepad: new Map<String, FlxGamepadInputID>(),
     };
 
-
     /**
      * Reflect a nested field in the data structure
      * @param field The string representing the field path
@@ -44,7 +49,6 @@ class RawKeys{
         return result; // Return the final value found
     }
 
-
     /**
      * Retrieve data from a specific field
      * @param nameData The name of the data field
@@ -52,7 +56,66 @@ class RawKeys{
      */
     public inline static function pushData(nameData:String):Dynamic
         return reflect(nameData); // Use reflect to get the value
+    
+    public inline static function pressed(key:String):Bool{
+        var parts = key.split(".");
+        if (parts.length < 2) return false;
 
+        var id = parts[0];
+        var i  = parts[1];
+        if (id == 'keyboard' || id == 'board'){
+            var get = FlxG.keys.checkStatus(i, PRESSED);
+            if (get && Main.isDebug)
+                Log.info('Keyboard Pressed --> $i');
+            return get;
+        }else if (id == 'gamepad' || id == 'pad'){
+            var get = FlxG.gamepads.anyPressed(i);
+            if (get && Main.isDebug)
+                Log.info('Gamepad Pressed --> $i');
+            return get;
+        }
+        return false;
+    }
+
+    public inline static function justPressed(key:String):Bool{
+        var parts = key.split(".");
+        if (parts.length < 2) return false;
+
+        var id = parts[0];
+        var i  = parts[1];
+        if (id == 'keyboard' || id == 'board'){
+            var get = FlxG.keys.checkStatus(i, JUST_PRESSED);
+            if (get && Main.isDebug)
+                Log.info('Keyboard JustPressed --> $i');
+            return get;
+        }else if (id == 'gamepad' || id == 'pad'){
+            var get = FlxG.gamepads.anyJustPressed(i);
+            if (get && Main.isDebug)
+                Log.info('Gamepad JustPressed --> $i');
+            return get;
+        }
+        return false;
+    }
+
+    public inline static function justReleased(key:String):Bool{
+        var parts = key.split(".");
+        if (parts.length < 2) return false;
+
+        var id = parts[0];
+        var i  = parts[1];
+        if (id == 'keyboard' || id == 'board'){
+            var get = FlxG.keys.checkStatus(i, JUST_RELEASED);
+            if (get && Main.isDebug)
+                Log.info('Keyboard JustReleased --> $i');
+            return get;
+        }else if (id == 'gamepad' || id == 'pad'){
+            var get = FlxG.gamepads.anyJustReleased(i);
+            if (get && Main.isDebug)
+                Log.info('Gamepad JustReleased --> $i');
+            return get;
+        }
+        return false;
+    }
 
     /**
      * Set default data if it doesn't exist, with optional conditions
@@ -90,7 +153,6 @@ class RawKeys{
                 Log.info("Field already exists: " + fieldName);
         }
     }
-
 
     /**
      * Check value based on condition and set if condition is met
@@ -139,11 +201,8 @@ class RawKeys{
             default:
                 Log.info("Unknown operation: " + operation);
         }
-
-        // Log that the field already exists and is being evaluated
         Log.info("Evaluating condition for field: " + nameData);
     }
-
 
     /**
      * Save data to a file
@@ -176,7 +235,6 @@ class RawKeys{
         }catch (error:Dynamic)
             Log.info("Error saving data: " + error); // Log any errors that occur
     }
-
 
     /**
      * Load data from a file
@@ -234,23 +292,24 @@ class RawKeys{
         }
     }
 
-
-    /**
-     * Load default data and save it
-     */
-    public static function loadDefaultData():Void{
+    static function loadDefaultData():Void{
         saveData(); // Save default data
         loadData(); // Load it back into the structure
         Log.info("Data initialized as it was null.");
     }
-
 
     /**
      * Construct the appropriate save path based on the operating system
      * @return The file path as a string
      */
     inline static function getFilePath():String{
-        final local = FlxG.stage.application.meta.get('company') + "/" + (MainCore.ENGINE == null ? 'Unknown' : (MainCore.ENGINE.replace("'", "").replace(" ", "-"))) + '/${MainCore.APP}';
+        var enginePart:String = Std.string(MainCore.engine.get('engine') != null
+        ? MainCore.engine.get('engine') : 'Unknown')
+        .replace("'", "")
+        .replace(" ", "-");
+        final local = FlxG.stage.application.meta.get('company') + "/"  + enginePart
+        + '/' + Std.string(MainCore.engine.get('name'));
+
         final user:String = Sys.getEnv("USER") != null ? Sys.getEnv("USER") : Sys.getEnv("USERNAME");
         final file = "keys.svk"; // SaveFile
         var path:String;
@@ -279,10 +338,8 @@ class RawKeys{
         #else
             throw "Unsupported OS!";
         #end
-
-        // Ensure the path exists
         Paths.fileSystem(path);
         Log.info('Diretory: ' + path.substr(0, path.lastIndexOf("\\")));
-        return path; // Return the constructed path
+        return path;
     }
 }

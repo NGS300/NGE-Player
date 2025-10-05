@@ -22,13 +22,10 @@ class CrashHandler{
             }
         }
         errMsg += "\nUncaught Error: " + e.error + "\nPlease report this error to the GitHub page: https://github.com/NGS300/NGE-Player";
-    
         Paths.folderSystem(folder);
         sys.io.File.saveContent(path, errMsg + "\n");
-
         Log.error(errMsg);
         Log.error("Crash dump saved in " + haxe.io.Path.normalize(path));
-    
         lime.app.Application.current.window.alert(errMsg, "Error!");
         Sys.exit(1);
     }

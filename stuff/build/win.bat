@@ -1,7 +1,7 @@
 @echo off
 cls
 color 04
-title Build Tool - v. 1.4
+title Build Tool - v1.4 - Release
 timeout /t 1 >nul
 echo Wellcome:
 hostname

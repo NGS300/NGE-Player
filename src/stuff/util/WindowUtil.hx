@@ -1,8 +1,9 @@
 package stuff.util;
-import openfl.Lib;
 //import stuff.network.api.Gamejolt;
 //import stuff.network.api.Discord;
+import sys.FileSystem;
 import openfl.Lib;
+import sys.io.File;
 import lime.app.Application;
 import flixel.util.FlxSignal.FlxTypedSignal;
 using StringTools;
@@ -37,7 +38,6 @@ class WindowUtil{
     #end
   }
 
-
   /**
    * Runs platform-specific code to open a path in the file explorer.
    * @param targetPath The path to open.
@@ -58,27 +58,6 @@ class WindowUtil{
       throw name;
     #end
   }
-    /*inline public static function folder(folder:String, absolute = false){
-      #if sys
-        if (!absolute)
-                  folder =  Sys.getCwd() + '$folder';
-  
-        folder = folder.replace('/', '\\');
-        if (folder.endsWith('/'))
-                  folder.substr(0, folder.length - 1);
-  
-        #if linux
-            var command:String = '/usr/bin/xdg-open';
-        #else
-            var command:String = 'explorer.exe';
-        #end
-        Sys.command(command, [folder]);
-        Log.print('$command $folder');
-      #else
-        Log.print("Platform is not supported for CoolUtil.folder", 'error');
-      #end
-    }*/
-
 
   /**
    * Runs platform-specific code to open a file explorer and select a specific file.
@@ -102,38 +81,59 @@ class WindowUtil{
     #end
   }
 
-
   /**
    * Dispatched when the game window is closed.
    */
   public static final winExit:FlxTypedSignal<Int->Void> = new FlxTypedSignal<Int->Void>();
-
 
   /**
    * Wires up FlxSignals that happen based on window activity.
    * For example, we can run a callback when the window is closed.
    */
   public static function init():Void{
-    // onUpdate is called every frame just before rendering.
-    // onExit is called when the game window is closed.
-    //Debug.initialize();
-    //Gamejolt.initialize();
-		//Discord.initialize();
+    var path = "engine.json";
+    if (!FileSystem.exists(path)){
+      trace('File $path NOT Exist!');
+      return;
+    }
+    var data:Dynamic = haxe.Json.parse(File.getContent(path));
+
+    // --- Engine ---
+    if (data.engine != null){
+      var eng = data.engine;
+      MainCore.engine.set('title', eng.Engine + " - " + eng.App);
+      MainCore.engine.set('engine', eng.Engine);
+      MainCore.engine.set('name', eng.App);
+      MainCore.engine.set('version', 'v' + eng.Version);
+      MainCore.engine.set('state', eng.State);
+      MainCore.engine.set('number', eng.Number);
+      MainCore.engine.set('date', eng.Date);
+    }
+
+    // --- Game ---
+    if (data.game != null){
+      var g = data.game;
+      MainCore.game.set('name', g.Name);
+      MainCore.game.set('version', 'v' + g.Version);
+    }
+
+    // --- API ---
+    if (data.api != null){
+      var a = data.api;
+      MainCore.api.set('discord_id', a.Discord);
+      MainCore.api.set('jolt_key', a.GameJolt_Key);
+      MainCore.api.set('jolt_id', a.GameJolt_ID);
+    }
+
+    // Handler de erros
+    Lib.current.loaderInfo.uncaughtErrorEvents.addEventListener(
+      openfl.events.UncaughtErrorEvent.UNCAUGHT_ERROR, 
+      stuff.util.debug.CrashHandler.onCrash
+    );
     Lib.current.stage.application.onExit.add(function(exit:Int){
-      //Discord.shutdown();
       winExit.dispatch(exit);
     });
-
-    /*openfl.Lib.current.stage.addEventListener(openfl.events.KeyboardEvent.KEY_DOWN, (e:openfl.events.KeyboardEvent) ->{
-      for (key in PlayerSettings.player1.controls.getKeysForAction(FULLSCREEN)){
-        if (e.keyCode == key)
-          openfl.Lib.application.window.fullscreen = !openfl.Lib.application.window.fullscreen;
-      }
-    });*/
-
-    Lib.current.loaderInfo.uncaughtErrorEvents.addEventListener(openfl.events.UncaughtErrorEvent.UNCAUGHT_ERROR, stuff.util.debug.CrashHandler.onCrash);
   }
-
 
   /**
    * Turns off that annoying "Report to Microsoft" dialog that pops up when the game crashes.
@@ -146,23 +146,23 @@ class WindowUtil{
     #end
   }
 
-
   /**
    * Sets the title of the application window.
    * @param value The title to use.
    */
-  public static function setWindowTitle(?name:String, isCustom = true){
-    var engi = MainCore.info;
+  public static function setWindowTitle(?name:String, isCustom = true):String{
+    var title = MainCore.engine;
     var result:String = '';
-    if (isCustom)
-      result = (engi.title = name);
-    else
-      result = engi.title;
+    if (isCustom){
+        title.set('title', name);
+        result = title.get('title');
+    }else
+        result = title.get('title');
 
     Log.info('New Title: ${result}');
-    return Application.current.window.title = result;
+    Application.current.window.title = result;
+    return result;
   }
-
   
   public static function windowMove(xy:Array<Null<Int>>){
     var result = [xy[0], (xy[1] > 0 ? - xy[1] : - xy[1])];
@@ -176,7 +176,6 @@ class WindowUtil{
     var lastX = win.x;
     var lastY = win.y;
     if (!ignore[0]) win.x += result[0];
-
     if (!ignore[1]) win.y += result[1];
 
     var noreX = ignore[0];
@@ -186,7 +185,6 @@ class WindowUtil{
     var showY = (noreY ? '' : 'y: (last: $lastY --> new: ${result[1]}');
     Log.info('Moving to: ${showX}${colide}${showY}');
   }
-
 
   public static function windowPos(xy:Array<Null<Int>>){
     var result = xy;
@@ -198,7 +196,6 @@ class WindowUtil{
 
     var win = Application.current.window;
     if (!ignore[0]) win.x = result[0];
-
     if (!ignore[1]) win.y = result[1];
 
     var noreX = ignore[0];
@@ -208,7 +205,6 @@ class WindowUtil{
     var showY = (noreY ? '' : 'y: ${result[1]}');
     Log.info('New Position: ${showX}${colide}${showY}');
   }
-
 
   /**
    * [Application meta name]

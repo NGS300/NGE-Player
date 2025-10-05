@@ -11,13 +11,11 @@ class DateUtil{
     public static function getCurrentDate():Date
         return Date.now();
 
-
     /**
      * Returns the current timestamp in seconds since epoch.
      */
     public static function getCurrentTimestamp():Float
         return Sys.time();
-
 
     /**
      * Returns the current date and time formatted as "YYYY-MM-DD HH:MM:SS".
@@ -27,7 +25,6 @@ class DateUtil{
         return DateTools.format(currentDate, "%Y-%m-%d %H:%M:%S");
     }
 
-
     /**
      * Returns the current date formatted as "YYYY-MM-DD".
      */
@@ -35,7 +32,6 @@ class DateUtil{
         var currentDate:Date = Date.now();
         return DateTools.format(currentDate, "%Y-%m-%d");
     }
-
 
     /**
      * Returns the current time formatted as "HH:MM:SS.MS" (including milliseconds).
@@ -47,10 +43,8 @@ class DateUtil{
         var seconds:String = StringTools.lpad(Std.string(currentDate.getSeconds()), "0", 2);
         var milliseconds:Int = Std.int(currentDate.getTime() % 1000);
         var millisecondsString:String = StringTools.lpad(Std.string(milliseconds), "0", 3);
-    
         return hours + ":" + minutes + ":" + seconds + "." + millisecondsString;
     }
-
 
     /**
      * Returns the current time formatted as "HH:MM:SS".
@@ -60,7 +54,6 @@ class DateUtil{
         return DateTools.format(currentDate, "%H:%M:%S");
     }
 
-
     /**
      * Returns the current day of the week (e.g., "Monday").
      */
@@ -69,7 +62,6 @@ class DateUtil{
         return DateTools.format(currentDate, "%A");
     }
 
-
     /**
      * Returns the name of the current month (e.g., "July").
      */
@@ -77,7 +69,6 @@ class DateUtil{
         var currentDate:Date = Date.now();
         return DateTools.format(currentDate, "%B");
     }
-
 
     /**
      * Returns a detailed string representation of the current date and time.
@@ -92,7 +83,6 @@ class DateUtil{
                ", Seconds: " + currentDate.getSeconds();
     }
 
-
     /**
      * Returns the current date and time formatted using a custom format.
      * @param formatTxt Whether to include text in the format (default is false).
@@ -101,7 +91,6 @@ class DateUtil{
         var currentDate:Date = Date.now();
         return formatDate(currentDate, formatTxt, withMinus);
     }
-
 
     /**
      * Private function to format a Date object into a string.
@@ -115,7 +104,6 @@ class DateUtil{
         var hours:String = StringTools.lpad(Std.string(date.getHours()), "0", 2);
         var minutes:String = StringTools.lpad(Std.string(date.getMinutes()), "0", 2);
         var seconds:String = StringTools.lpad(Std.string(date.getSeconds()), "0", 2);
-        
         var space = " ";
         var m = "-";
         var i = ':';
@@ -124,10 +112,19 @@ class DateUtil{
             i = (withMinus ? m : "'");
             return year + m + month + m + day + space + hours + i + minutes + i + seconds;
         }
-
         return year + m + month + m + day + space + hours + i + minutes + i + seconds;
     }
 
+    public static function systemDate():String{
+        var now = Date.now();
+        var day = (if (now.getDate() < 10) "0" else "") + now.getDate();
+        var month = (if (now.getMonth() + 1 < 10) "0" else "") + (now.getMonth() + 1);
+        var year = now.getFullYear();
+        var hours = (if (now.getHours() < 10) "0" else "") + now.getHours();
+        var minutes = (if (now.getMinutes() < 10) "0" else "") + now.getMinutes();
+        var seconds = (if (now.getSeconds() < 10) "0" else "") + now.getSeconds();
+        return day + "/" + month + "/" + year + " - " + hours + ":" + minutes + ":" + seconds;
+    }
 
     /**
      * Generates a timestamp string based on the provided or current date.
@@ -137,7 +134,6 @@ class DateUtil{
         if (date == null) date = Date.now();
         return '${date.getFullYear()}-${Std.string(date.getMonth() + 1).lpad('0', 2)}-${Std.string(date.getDate()).lpad('0', 2)}-${Std.string(date.getHours()).lpad('0', 2)}-${Std.string(date.getMinutes()).lpad('0', 2)}-${Std.string(date.getSeconds()).lpad('0', 2)}';
     }
-
     
     /**
      * Generates a clean timestamp string in the format "Month Day, Year at HH:MM AM/PM".

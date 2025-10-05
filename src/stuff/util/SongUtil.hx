@@ -18,15 +18,22 @@ class SongUtil{
     /**
      * Convert difficulty string to int
      */
-    public static function diffToInt(diff:String):Int{
+    public static function diffToInt(diff:String):Int
         return difficulty.get(diff);
-    }
 
     /**
      * Convert difficulty int to string
      */
-    public static function intToDiff(value:Int):String{
+    public static function intToDiff(value:Int):String
         return difficultyInv.get(value);
+
+    /**
+     * Convert Float to String
+     */
+    public static function floatToString(f:Float):String{
+        var s = Std.string(f);
+        if (Math.floor(f) == f && s.indexOf(".") == -1) s += ".0";
+        return s;
     }
 
     /**
@@ -46,6 +53,59 @@ class SongUtil{
 		}
 		return folder;
 	}
+
+    /**
+     * Wraps a string to a new line based on a max character length per line.
+     * 1. Forces a line break when a semicolon followed by a space ("; ") is found.
+     * 2. Implements mandatory word break/hyphenation ('c-') if needed to fit maxLineLength.
+     */
+    public static function wrapCharText(text:String, maxLineLength:Int):String{
+        if (text == null || text.length == 0) return "";
+        
+        var chunks = text.split("; ");
+        var finalLines:Array<String> = [];
+        for (chunk in chunks){
+            if (chunk.length == 0) continue;
+
+            var words = chunk.split(" ");
+            var currentLine = "";
+            for (word in words){
+                var currentLength = currentLine.length + (currentLine.length > 0 ? 1 : 0); 
+                if (currentLength + word.length > maxLineLength){
+                    var remainingWord = word;
+                    
+                    var availableSpace = maxLineLength - currentLength;
+                    if (currentLine.length > 0 && availableSpace >= 2){ 
+                        var charsToBreak = availableSpace - 1;
+                        if (charsToBreak >= 1){ 
+                            var part1 = word.substr(0, charsToBreak) + "-";
+                            remainingWord = word.substr(charsToBreak);
+                            
+                            currentLine += " " + part1;
+                            finalLines.push(currentLine);
+                            currentLine = "";
+                        }
+                    }
+                    
+                    if (currentLine.length > 0){
+                        finalLines.push(currentLine);
+                        currentLine = "";
+                    }
+                    while (remainingWord.length > maxLineLength){
+                         var segment = remainingWord.substr(0, maxLineLength);
+                         finalLines.push(segment);
+                         remainingWord = remainingWord.substr(maxLineLength);
+                    }
+                    currentLine = remainingWord;
+                    continue;
+                }
+                if (currentLine.length > 0) currentLine += " ";
+                currentLine += word;
+            }
+            if (currentLine.length > 0) finalLines.push(currentLine);
+        }
+        return finalLines.join("\n");
+    }
 
     public static function fancyOpenURL(schmancy:String){
 		#if linux

@@ -196,7 +196,6 @@ class Song{
 		idMap.set("version", songData.version);
 		idMap.set("canVoices", songData.canVoices);
 		idMap.set("validScore", true);
-
 		return {
 			id: idMap,
 			diff: diffs

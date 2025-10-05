@@ -4,6 +4,7 @@ import stuff.util.save.raw.RawData;
 
 class SaveData extends RawData{
     static final raw = RawData;
+    
     /**
      * Retrieve data from the raw data structure using a field name.
      * @param name The name of the data field.
@@ -11,7 +12,6 @@ class SaveData extends RawData{
      */
     public static function get(name:String):Dynamic
         return raw.pushData(name); // Use the pushData method to retrieve the value.
-
 
     /**
      * Save data to the raw data structure using a field name and value.
@@ -29,8 +29,6 @@ class SaveData extends RawData{
                 Reflect.setField(target, f, new Map<String, Dynamic>()); // Create a new map if the field doesn't exist.
             target = Reflect.field(target, f); // Move deeper into the structure.
         }
-
-        // Set the final field with the provided value.
         Reflect.setField(target, fieldName, value);
     }
 
@@ -50,6 +48,7 @@ class SaveData extends RawData{
 		dataFile(false);
 
         // String data
+        data("string.userName", 'Guest');
         data("string.language", 'english');
 	
 		// Bool data
@@ -57,13 +56,13 @@ class SaveData extends RawData{
         data("bool.autoPause", true);
         data("bool.showMemory", true);
         data("bool.showFPS", true);
-        data("bool.volumeMute", false);
+        data("bool.muteVolume", false);
 
         // Int data
-		data("int.fpsCap", (cast(openfl.Lib.current.getChildAt(0), Main)).config.rate, ['>', 'int', 360]);
+		data("int.frameRate", (cast(openfl.Lib.current.getChildAt(0), Main)).config.rate, ['>', 'int', 360]); // fpscap max 360
 
         // Float data
-        data("float.volume", 1.0);
+        data("float.engineVolume", 1.0);
 
         // ReSaved File
 		dataFile(true);

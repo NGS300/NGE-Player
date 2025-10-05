@@ -1,68 +1,92 @@
 <?xml version="1.0" encoding="utf-8"?>
 <project>
-	<!-- _________________________ Application Settings _________________________ -->
-	<app title="NG's Engine - Player" file="NGE" packageName="com.nge.player" package="com.nge.player" main="Main" version="0.1" company="HiroSky" />
+	<!-- ========================= Application Settings ========================= -->
+	<app 
+		main="Main"
+		file="NGE"
+		title="NG's Engine - Player"
+		packageName="com.nge.player"
+		package="com.nge.player"
+		company="HiroSky"
+		version="0.0.0"
+		preloader="flixel.system.FlxPreloader"
+	/>
+
+	<!-- Identifiers & Metadata -->
 	<set name="APP_ID" value="0x0100f6c013bbc000" />
-	<app preloader="flixel.system.FlxPreloader" />
 	<set name="SWF_VERSION" value="11.8" />
 
-	<!-- ____________________________ Window Settings ___________________________ -->
-	<window width="1280" height="720" fps="60" background="#000000" hardware="true" vsync="false" /> <!--These window settings apply to all targets-->
-	<window if="html5" resizable="true" /> <!--HTML5-specific-->
-	<window if="desktop" orientation="landscape" fullscreen="false" resizable="false" vsync="false" /> 	<!--Desktop-specific-->
-	<window if="mobile" orientation="landscape" fullscreen="true" width="0" height="0" resizable="false" /> <!--Mobile-specific-->
+	<!-- ========================== Window Settings ============================= -->
+	<!-- Default (all targets) -->
+	<window width="1280" height="720" fps="60" background="#000000" hardware="true" vsync="false" />
 
-	<!-- _____________________________ Path Settings ____________________________ -->
+	<!-- Platform-specific -->
+	<window if="desktop" orientation="landscape" fullscreen="false" resizable="false" vsync="false" />
+	<window if="html5" resizable="true" />
+	<window if="mobile" orientation="landscape" fullscreen="true" width="0" height="0" resizable="false" />
+
+	<!-- =========================== Build Settings ============================= -->
+	<classpath name="src" />
+
 	<set name="BUILD_DIR" value="exit/debug" if="debug" />
 	<set name="BUILD_DIR" value="exit/64x" unless="debug" />
 	<set name="BUILD_DIR" value="exit/32x" if="32bit" />
 
-	<classpath name="src" />
-
+	<!-- ============================ Assets ==================================== -->
+	<!-- Controle de preload -->
 	<define name="PRELOAD_ALL" unless="web" />
 	<define name="NO_PRELOAD_ALL" unless="PRELOAD_ALL" />
+
 	<section if="PRELOAD_ALL">
 		<library name="shared" preload="true" />
 	</section>
 	<section if="NO_PRELOAD_ALL">
 		<library name="shared" preload="false" />
 	</section>
+
+	<!-- Shared assets -->
 	<assets path="assets/shared/fonts" embed="true" />
 	<assets path="assets/shared" library="shared" exclude="*.fla|*.ogg|*.wav" if="web" />
 	<assets path="assets/shared" library="shared" exclude="*.fla|*.mp3|*.wav" unless="web" />
-	<assets path="assets/example_mods" library="mods" rename='mods' exclude="*.fla|*.ogg|*.wav" if="web" />
-	<assets path="assets/example_mods" library="mods" rename='mods' exclude="*.fla|*.mp3|*.wav" unless="web" />
-	<assets path="CHANGELOG.md" rename="updatelog.txt"/>
 
-	<!-- _______________________________ Libraries ______________________________ -->
+	<!-- Example mods -->
+	<assets path="assets/example_mods" library="mods" rename="mods" exclude="*.fla|*.ogg|*.wav" if="web" />
+	<assets path="assets/example_mods" library="mods" rename="mods" exclude="*.fla|*.mp3|*.wav" unless="web" />
+
+	<!-- Extra -->
+	<assets path="EngineFile.json" rename="engine.json" />
+	<assets path="CHANGELOG.md" rename="updatelog.txt" />
+
+	<!-- =========================== Libraries ================================== -->
 	<haxelib name="flixel" />
-	<haxedev set="webgl" />
 	<haxelib name="flixel-addons" />
-	<haxelib name="hscript" />
 	<haxelib name="flixel-ui" />
+	<haxelib name="hscript" />
 	<haxelib name="json2object" />
 	<haxelib name="hxcpp-debug-server" if="desktop debug" />
 
-	<!-- ______________________________ Haxedefines _____________________________ -->
-	<haxedef name="FLX_NO_FOCUS_LOST_SCREEN" /> <!--Disable the Flixel core focus lost screen-->
-	<haxedef name="FLX_NO_DEBUG" unless="debug || FORCE_DEBUG_VERSION" /> <!--Disable the Flixel core debugger. Automatically gets set whenever you compile in release mode!-->
-	<haxedef name="NAPE_RELEASE_BUILD" unless="debug" /> <!--Enable this for Nape release builds for a serious peformance improvement-->
+	<haxedev set="webgl" />
 
-	<!-- _________________________________ Custom _______________________________ -->	
-	<!-- Skip the Intro -->
+	<!-- ========================== Haxedefines ================================= -->
+	<haxedef name="FLX_NO_FOCUS_LOST_SCREEN" /> <!-- Remove Flixel focus lost screen -->
+	<haxedef name="FLX_NO_DEBUG" unless="debug || FORCE_DEBUG_VERSION" /> <!-- Disable Flixel debugger on release -->
+	<haxedef name="NAPE_RELEASE_BUILD" unless="debug" /> <!-- Performance boost for Nape -->
+
 	<section if="debug">
+		<!-- Debug-only configs aqui -->
 	</section>
 
 	<section>
 		<haxedef name="openfl-enable-handle-error" />
 	</section>
 
-	<!-- HaxeFlixel Icon (The Engine Icons)-->
-	<icon path="stuff/icon/icon16.png" size='16'/>
-	<icon path="stuff/icon/icon32.png" size='32'/>
-	<icon path="stuff/icon/icon64.png" size='64'/>
-	<icon path="stuff/icon/icon128.png" size='128'/>
-	<icon path="stuff/icon/icon256.png" size='256'/>
-	<icon path="stuff/icon/icon512.png" size='512'/>
+	<!-- ============================= Icons ==================================== -->
+	<icon path="stuff/icon/icon16.png" size="16" />
+	<icon path="stuff/icon/icon32.png" size="32" />
+	<icon path="stuff/icon/icon64.png" size="64" />
+	<icon path="stuff/icon/icon128.png" size="128" />
+	<icon path="stuff/icon/icon256.png" size="256" />
+	<icon path="stuff/icon/icon512.png" size="512" />
 	<icon path="stuff/icon/iconOG.png" />
+
 </project>

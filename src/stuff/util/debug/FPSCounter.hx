@@ -16,6 +16,7 @@ class FPSCounter extends TextField{
 	@:noCompletion private var currentTime:Float;
 	@:noCompletion private var times:Array<Float>;
 	@:noCompletion private var smoothedFPS:Float;
+	var deltaTimeout:Float = 0.0;
 	public function new(y:Float = 10, color:Int = 0x000000){
 		super();
 		this.x = 8;
@@ -29,7 +30,6 @@ class FPSCounter extends TextField{
 		text = "FPS: ";
 		times = [];
 	}
-	var deltaTimeout:Float = 0.0;
 
 	// Event Handlers
 	private override function __enterFrame(deltaTime:Float):Void{
@@ -37,7 +37,6 @@ class FPSCounter extends TextField{
 			deltaTimeout = 0.0;
 			return;
 		}
-		
 		#if !debug
 			final now:Float = haxe.Timer.stamp() * 1000;
 			times.push(now);
@@ -52,7 +51,6 @@ class FPSCounter extends TextField{
 			times.push(currentTime);
 			while (times[0] < currentTime - 1000)
 				times.shift();
-	
 			var currentCount = times.length;
 			var calculatedFPS = (currentCount + cacheCount) / 2;
 	
@@ -65,6 +63,7 @@ class FPSCounter extends TextField{
 			deltaTimeout += deltaTime;
 		#end
 	}
+	
 	public dynamic function updateText(isDebug:Bool):Void{ // Allows overriding in HScript
 		text = 'FPS: ${currentFPS}';
 		textColor = 0xFFFFFFFF; // Default color (white)

@@ -167,10 +167,12 @@ class Log{
 		if (FlxG != null && FlxG.game != null && FlxG.log != null)
 			FlxG.log.advanced(data, logStyle);
 	}
+
 	static function writeFile(data:Array<Dynamic>, logLevel:String = "TRACE"){
 		if (fileWriter != null && fileWriter.isActive())
 			fileWriter.write(data, logLevel);
 	}
+
 	static function outputer(input:Dynamic, pos:haxe.PosInfos):Array<Dynamic>{
 		var inArray:Array<Dynamic> = null;
 		if (input == null)
@@ -206,7 +208,6 @@ class DebugLogWriter{
         logLevel = LOG_LEVELS.indexOf(logLevelParam);
 		if (Log.canPrintLog){
 			debug("Initializing log file...");
-
 			var logFilePath = '$LOG_FOLDER/${DateUtil.getFormattedDate().replace(" ", "_").replace(":", "-")}.log';
 			if (logFilePath.indexOf("/") != -1){
 				var lastIndex:Int = logFilePath.lastIndexOf("/");
