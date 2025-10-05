@@ -32,10 +32,6 @@
 	<set name="BUILD_DIR" value="exit/64x" unless="debug" />
 	<set name="BUILD_DIR" value="exit/32x" if="32bit" />
 
-	<!-- Auto version/build (gerado pelo compilador) -->
-	<haxedef name="APP_BUILD_DATE" value="$$(Date.now().toString())" />
-	<haxedef name="APP_BUILD_NUMBER" value="$$(Std.random(99999))" />
-
 	<!-- ============================ Assets ==================================== -->
 	<!-- Controle de preload -->
 	<define name="PRELOAD_ALL" unless="web" />
