@@ -1,7 +1,7 @@
 @echo off
 cls
 color 04
-title Build Tool - v. 1.4
+title Build Tool - v1.4 - Debug
 
 rem Display a welcome message
 echo Welcome:

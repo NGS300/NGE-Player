@@ -5,7 +5,6 @@ package core;
  */
 class TimingStruct{
     public static var AllTimings:Array<TimingStruct> = [];
-
     public var bpm:Float = 0;         // BPM in this segment
     public var startBeat:Float = 0;   // Starting beat of this segment
     public var startStep:Int = 0;     // Starting step index
@@ -16,9 +15,7 @@ class TimingStruct{
     /**
      * Clears all stored timing segments
      */
-    public static function clearTimings(){
-        AllTimings = [];
-    }
+    public static function clearTimings() AllTimings = [];
 
     /**
      * Adds a new timing segment

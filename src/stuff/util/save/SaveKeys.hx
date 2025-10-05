@@ -4,6 +4,10 @@ import stuff.util.save.raw.RawKeys;
 
 class SaveKeys extends RawKeys{
     static final raw = RawKeys;
+    public static var pressed = RawKeys.pressed;
+    public static var justPressed = RawKeys.justPressed;
+    public static var justReleased = RawKeys.justReleased;
+
     /**
      * Retrieve data from the raw data structure using a field name.
      * @param name The name of the data field.
@@ -11,7 +15,6 @@ class SaveKeys extends RawKeys{
      */
     public static function get(name:String):Dynamic
         return raw.pushData(name); // Use the pushData method to retrieve the value.
-
 
     /**
      * Save data to the raw data structure using a field name and value.
@@ -29,8 +32,6 @@ class SaveKeys extends RawKeys{
                 Reflect.setField(target, f, new Map<String, Dynamic>()); // Create a new map if the field doesn't exist.
             target = Reflect.field(target, f); // Move deeper into the structure.
         }
-
-        // Set the final field with the provided value.
         Reflect.setField(target, fieldName, value);
     }
 
@@ -44,16 +45,13 @@ class SaveKeys extends RawKeys{
             return raw.saveData(); // Save data if the canSave flag is true.
         return raw.loadData(); // Load data if the canSave flag is false.
     }
-
+    
     public static function data(mode:String, name:String, value:Dynamic){
         var id = raw.defaultData;
-        switch (mode){
-            case 'keyboard' | 'board':
-                id('keyboard.$name', value);
-            case 'gamepad' | 'pad':
-                id('gamepad.$name', value);
-        }
-        
+        if (mode == 'keyboard' || mode == 'board')
+            id('keyboard.$name', value);
+        else if (mode == 'gamepad' || mode == 'pad')
+            id('gamepad.$name', value);
     }
 
     public static function init():Void{
@@ -76,6 +74,13 @@ class SaveKeys extends RawKeys{
         data('board', 'down', 40);
         data('board', 'left', 37);
         data('board', 'right', 39);
+
+        // Alt's
+        data('board', 'capslock', 20);
+        data('board', 'shift', 16);
+
+        // F*n
+        data('board', 'f10', 121);
         
 
         // ReSaved File

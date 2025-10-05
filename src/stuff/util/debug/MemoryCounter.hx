@@ -16,7 +16,7 @@ class MemoryCounter extends TextField{
     var memPeak:Float = 0;
     public function new(y:Float = 10, color:Int = 0x000000){
         super();
-        this.x = 8; // 10
+        this.x = 8;
         this.y = y;
         selectable = false;
         mouseEnabled = false;
@@ -25,7 +25,6 @@ class MemoryCounter extends TextField{
         multiline = true;
         text = "RAM: ";
     }
-    
 
     override function __enterFrame(deltaTime:Float):Void{
         var mem:Float = 0;

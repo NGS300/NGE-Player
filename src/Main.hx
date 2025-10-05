@@ -15,6 +15,7 @@ class Main extends Sprite{
     private var keys = stuff.util.save.SaveKeys;
     public static var memoryCounter:MemoryCounter;
     public static var fpsCounter:FPSCounter;
+    public static var isDebug:Bool = false;
     public var config = {
         initialState: SetupState,//stuff.state.Title,
         fullscreen: false,
@@ -28,14 +29,17 @@ class Main extends Sprite{
             rate: 144
         #end
     };
+
     public static function main():Void
         Lib.current.addChild(new Main());
+
     public function new(){
 		super();
         stuff.util.debug.Log.init();
         stuff.util.WindowUtil.init();
 		(stage != null ? init() : addEventListener(Event.ADDED_TO_STAGE, init));
 	}
+
 	private function init(?E:Event){
 		if (hasEventListener(Event.ADDED_TO_STAGE))
             removeEventListener(Event.ADDED_TO_STAGE, init);
@@ -57,6 +61,11 @@ class Main extends Sprite{
 			i.width = Math.ceil(stageWidth / i.zoom);
 			i.height = Math.ceil(stageHeight / i.zoom);
 		}
+        #if debug
+            isDebug = true;
+        #else
+            isDebug = false;
+        #end
 
         //! Main
         data.init();

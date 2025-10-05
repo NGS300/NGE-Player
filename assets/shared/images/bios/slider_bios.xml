@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TextureAtlas imagePath="slider_bios.png">
+	<!-- Created with Adobe Animate version 24.0.9.74 -->
+	<!-- http://www.adobe.com/products/animate.html -->
+	<SubTexture name="left_move0000" x="0" y="164" width="119" height="41"/>
+	<SubTexture name="left_move0001" x="0" y="123" width="119" height="41"/>
+	<SubTexture name="left_move0002" x="0" y="82" width="119" height="41"/>
+	<SubTexture name="left_move0003" x="0" y="41" width="119" height="41"/>
+	<SubTexture name="left_move0004" x="0" y="0" width="119" height="41"/>
+	<SubTexture name="right_move0000" x="0" y="0" width="119" height="41"/>
+	<SubTexture name="right_move0001" x="0" y="41" width="119" height="41"/>
+	<SubTexture name="right_move0002" x="0" y="82" width="119" height="41"/>
+	<SubTexture name="right_move0003" x="0" y="123" width="119" height="41"/>
+	<SubTexture name="right_move0004" x="0" y="164" width="119" height="41"/>
+</TextureAtlas>

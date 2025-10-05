@@ -39,7 +39,6 @@ class MemoryUtil{
         #end
             return result;
     }
-
     
     /**
      * Calculate the total memory usage of the program, in bytes.
@@ -53,7 +52,6 @@ class MemoryUtil{
         #end
     }
 
-
     /**
      * Enable garbage collection if it was previously disabled.
      */
@@ -65,7 +63,6 @@ class MemoryUtil{
         #end
     }
 
-
     /**
      * Disable garbage collection entirely.
      */
@@ -76,7 +73,6 @@ class MemoryUtil{
             throw 'Not implemented!';
         #end
     }
-
 
     /**
      * Manually perform garbage collection once.
@@ -90,7 +86,6 @@ class MemoryUtil{
             throw 'Not implemented!';
         #end
     }
-
 
     /**
      * Perform major garbage collection repeatedly until less than 16kb of memory is freed in one operation.

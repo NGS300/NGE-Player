@@ -1,4 +1,5 @@
 package stuff;
+
 #if !macro
     import flixel.FlxG;
     import stuff.Paths;

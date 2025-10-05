@@ -10,7 +10,6 @@ class BeatState extends FlxUIState{
     private var systemClock:String = '';
     private var lastBeat:Float = 0;
     private var lastStep:Float = 0;
-
     private var curStep:Int = 0;
     private var curBeat:Int = 0;
     private var curDecimalBeat:Float = 0;
@@ -43,7 +42,6 @@ class BeatState extends FlxUIState{
                         }else if (ste < curStep){
                             curStep = ste;
                             updateBeat();
-                            // optional: skip stepHit to prevent duplicates
                         }
                     }
                 }
@@ -61,14 +59,12 @@ class BeatState extends FlxUIState{
                     }else if (nextStep < curStep){
                         curStep = nextStep;
                         updateBeat();
-                        // optional: skip stepHit
                     }
                 }
                 Conductor.crochet = ((60 / Conductor.bpm) * 1000);
             }
         }
-        systemClock = (Date.now().getDate() < 10 ? "0" : "") + Date.now().getDate() + "/" + (Date.now().getMonth() < 10 ? "0" : "") + (Date.now().getMonth() + 1) + "/" + Date.now().getFullYear() + 
-		' - ' + (Date.now().getHours() < 10 ? "0" : "") + Date.now().getHours() + ":" + (Date.now().getMinutes() < 10 ? "0" : "") + Date.now().getMinutes() + ":" + (Date.now().getSeconds() < 10 ? "0" : "")  + Date.now().getSeconds();
+        systemClock = stuff.util.DateUtil.systemDate();
         super.update(elapsed);
     }
 
@@ -107,7 +103,5 @@ class BeatState extends FlxUIState{
     /**
      * Called every beat (4 steps)
      */
-    public function beatHit():Void{
-        // intentionally empty
-    }
+    public function beatHit():Void{/* intentionally empty */}
 }

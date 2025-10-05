@@ -12,18 +12,11 @@ typedef BPMChangeEvent = {
 }
 
 class Conductor{
-	// --------------------------
-	// Timing settings
-	// --------------------------
 	public static var safeFrames:Int = 10; 
 	public static var safeZoneOffset:Float = Math.floor((safeFrames / 60) * 1000); // Safe zone in milliseconds
 	public static var timeScale:Float = Conductor.safeZoneOffset / 166;            // Scale for timing adjustments
-
 	public static var bpmChangeMap:Array<BPMChangeEvent> = []; // Holds all BPM changes for the song
 
-	// --------------------------
-	// Current song state
-	// --------------------------
 	public static var bpm:Float = 100;                            // Current BPM
 	public static var crochet:Float = ((60 / bpm) * 1000);        // Duration of a beat in ms
 	public static var stepCrochet:Float = crochet / 4;            // Duration of a step in ms
@@ -31,10 +24,7 @@ class Conductor{
 	public static var lastSongPos:Float;                          // Last song position (for tracking delta)
 	public static var offset:Float = 0;                           // Global offset applied to the song
 
-	// --------------------------
-	// Recalculate timing values based on safe frames
-	// --------------------------
-	public static function recalculateTimings(){
+	public static function recalculateTimings(){ // Recalculate timing values based on safe frames
 		Conductor.safeFrames = FlxG.save.data.frames;                          // Read safe frames from save data
 		Conductor.safeZoneOffset = Math.floor((Conductor.safeFrames / 60) * 1000); 
 		Conductor.timeScale = Conductor.safeZoneOffset / 166;                  // Recalculate time scale
@@ -91,9 +81,6 @@ class Conductor{
 		trace('Conductor BPM map: $bpmChangeMap');
 	}
 
-	// --------------------------
-	// Change global BPM
-	// --------------------------
 	/**
 	 * Changes the global BPM and recalculates beat durations.
 	 * @param newBpm New BPM value.

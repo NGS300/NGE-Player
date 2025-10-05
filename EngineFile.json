@@ -1,0 +1,19 @@
+{
+    "engine":{
+        "Engine": "NG's Engine",
+        "App": "Player",
+        "Version": "0.0.1",
+        "State": "Pre-Alpha",
+        "Number": 0,
+        "Date": "2025-??-??"
+    },
+    "game":{
+        "Name": "Friday Night Funkin'",
+        "Version": "0.0.1"
+    },
+    "api":{
+        "GameJolt_Key": "6f75075ef73ee34a21e39e0128e3e297",
+        "GameJolt_ID": "702509",
+        "Discord": ""
+    }
+}
